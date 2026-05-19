@@ -3,9 +3,10 @@ FROM rocker/r-ver:4.1.3
 
 ARG BWA_VER=0.7.17
 ARG SAM_VER=1.16.1
-ARG BCF_VER=1.15.1
-ENV JAVA_LIBRARY_PATH /usr/lib/jni
-ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
+ARG BCF_VER=1.21
+ENV JAVA_LIBRARY_PATH=/usr/lib/jni
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
+ENV BCFTOOLS_PLUGINS=/usr/local/bin/bcftools-plugins
 
 RUN apt-get update && \
  	apt-get upgrade -y && \
@@ -60,6 +61,8 @@ RUN wget -q -P /tmp https://github.com/samtools/bcftools/releases/download/${BCF
   && ./configure \
   && make \
   && cp /tmp/bcftools-${BCF_VER}/bcftools /usr/local/bin \
-  && cp /tmp/bcftools-${BCF_VER}/misc/plot-vcfstats /usr/local/bin
+  && cp /tmp/bcftools-${BCF_VER}/misc/plot-vcfstats /usr/local/bin \
+  && mkdir /usr/local/bin/bcftools-plugins \
+  && cp /tmp/bcftools-${BCF_VER}/plugins/* /usr/local/bin/bcftools-plugins
 
 CMD ["/bin/bash"]
